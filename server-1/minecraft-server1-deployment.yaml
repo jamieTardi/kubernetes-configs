@@ -1,0 +1,33 @@
+# minecraft-server1-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft-server1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minecraft-server1
+  template:
+    metadata:
+      labels:
+        app: minecraft-server1
+    spec:
+      containers:
+        - name: mc
+          image: itzg/minecraft-server
+          env:
+            - name: EULA
+              value: "TRUE"
+            - name: MEMORY
+              value: "8G"
+          ports:
+            - containerPort: 25565
+          volumeMounts:
+            - name: mc-data
+              mountPath: /data
+      volumes:
+        - name: mc-data
+          persistentVolumeClaim:
+            claimName: minecraft-server1-pvc
+

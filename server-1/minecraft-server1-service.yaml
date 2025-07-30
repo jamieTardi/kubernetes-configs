@@ -1,0 +1,14 @@
+# minecraft-server1-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: minecraft-server1
+spec:
+  type: NodePort
+  selector:
+    app: minecraft-server1
+  ports:
+    - port: 25565
+      targetPort: 25565
+      nodePort: 30565
+
