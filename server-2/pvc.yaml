@@ -1,0 +1,13 @@
+# pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minecraft-server-2-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-sc
+  resources:
+    requests:
+      storage: 100Gi
+

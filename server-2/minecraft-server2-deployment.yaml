@@ -2,16 +2,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: minecraft-server1
+  name: minecraft-server-2-creative
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: minecraft-server1
+      app: minecraft-server-2-creative
   template:
     metadata:
       labels:
-        app: minecraft-server1
+        app: minecraft-server-2-creative
     spec:
       containers:
         - name: mc
@@ -21,17 +21,19 @@ spec:
               value: "TRUE"
             - name: MEMORY
               value: "8G"
+            - name: MODE
+              value: "creative"
             - name: TYPE
               value: "PAPER"
             - name: MOTD
               value: |
-                A §l§cTardi§r Minecraft §nserver
+                A Creative §l§cTardi§r Minecraft §nserver
                 Running on %VERSION%
             - name: WHITELIST
               value: |
                 Eccentric87
                 Eccentric1987
-                
+                .Wheatgrass87
             - name: OPS
               value: |
                Eccentric87
@@ -41,7 +43,7 @@ spec:
                  https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/latest/downloads/spigot
           ports:
             - containerPort: 25565
-            - containerPort: 19132
+            - containerPort: 19132   # Bedrock Edition (UDP)
               protocol: UDP
           volumeMounts:
             - name: mc-data
@@ -49,5 +51,5 @@ spec:
       volumes:
         - name: mc-data
           persistentVolumeClaim:
-            claimName: minecraft-server1-pvc
+            claimName: minecraft-server-2-pvc
 
