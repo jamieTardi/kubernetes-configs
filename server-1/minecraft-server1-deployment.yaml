@@ -27,10 +27,6 @@ spec:
               value: |
                 A §l§cTardi§r Minecraft §nserver
                 Running on %VERSION%
-            - name: WHITELIST
-              value: |
-                Eccentric87
-                Eccentric1987
                 
             - name: OPS
               value: |
