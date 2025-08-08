@@ -1,0 +1,20 @@
+prometheus:
+  prometheusSpec:
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: "nfs"          # Use your NFS storage class here
+          accessModes:
+            - ReadWriteMany
+          resources:
+            requests:
+              storage: 50Gi                 # Size you want for Prometheus data
+
+grafana:
+  persistence:
+    enabled: true
+    storageClassName: "nfs"              # Same NFS storage class
+    accessModes:
+      - ReadWriteMany
+    size: 10Gi                          # Grafana storage size (dashboards etc.)
+
