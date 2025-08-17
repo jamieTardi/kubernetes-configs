@@ -13,7 +13,7 @@ spec:
     storage: 10Gi
   accessModes:
     - ReadWriteOnce
-  storageClassName: ""
+  storageClassName: ''
   hostPath:
     path: /mnt/minecraft/stardew-valley
 ---
@@ -30,7 +30,7 @@ spec:
     requests:
       storage: 10Gi
   volumeName: stardew-pv
-  storageClassName: ""
+  storageClassName: ''
 ---
 # Deployment
 apiVersion: apps/v1
@@ -52,9 +52,13 @@ spec:
     spec:
       containers:
         - name: stardew
-          image: velimirski/stardew-valley-multiplayer:latest
+          image: serverpro/stardew-valley-server
+          env:
+            - name: SMAPI_VERSION
+              value: "4.0.8"
           ports:
             - containerPort: 24642
+              protocol: UDP
           volumeMounts:
             - name: stardew-data
               mountPath: /stardew
@@ -63,7 +67,7 @@ spec:
           persistentVolumeClaim:
             claimName: stardew-pvc
 ---
-# Service with custom NodePort
+# Service with custom NodePort (UDP)
 apiVersion: v1
 kind: Service
 metadata:
@@ -74,6 +78,13 @@ spec:
     app: stardew
   type: NodePort
   ports:
-    - port: 24642
+    - name: stardew-udp
+      protocol: UDP
+      port: 24642
       targetPort: 24642
       nodePort: 31042
+    - name: vnc-tcp
+      protocol: TCP
+      port: 5900
+      targetPort: 5900
+      nodePort: 31045
