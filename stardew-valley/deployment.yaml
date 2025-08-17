@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: games
+---
+# Persistent Volume (hostPath)
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: stardew-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  hostPath:
+    path: /mnt/minecraft/stardew-valley
+---
+# Persistent Volume Claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: stardew-pvc
+  namespace: games
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  volumeName: stardew-pv
+  storageClassName: ""
+---
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stardew-server
+  namespace: games
+  labels:
+    app: stardew
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stardew
+  template:
+    metadata:
+      labels:
+        app: stardew
+    spec:
+      containers:
+        - name: stardew
+          image: velimirski/stardew-valley-multiplayer:latest
+          ports:
+            - containerPort: 24642
+          volumeMounts:
+            - name: stardew-data
+              mountPath: /stardew
+      volumes:
+        - name: stardew-data
+          persistentVolumeClaim:
+            claimName: stardew-pvc
+---
+# Service with custom NodePort
+apiVersion: v1
+kind: Service
+metadata:
+  name: stardew-service
+  namespace: games
+spec:
+  selector:
+    app: stardew
+  type: NodePort
+  ports:
+    - port: 24642
+      targetPort: 24642
+      nodePort: 31042
