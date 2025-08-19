@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vrising
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vrising
+  template:
+    metadata:
+      labels:
+        app: vrising
+    spec:
+      containers:
+        - name: vrising
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: TZ
+              value: {{ .Values.server.tz }}
+            - name: SERVERNAME
+              value: {{ .Values.server.name }}
+          ports:
+            - containerPort: {{ .Values.ports.gamePort }}
+              protocol: UDP
+            - containerPort: {{ .Values.ports.queryPort }}
+              protocol: UDP
+          volumeMounts:
+            - name: vrising-storage
+              mountPath: /mnt/vrising/server
+              subPath: server
+            - name: vrising-storage
+              mountPath: /mnt/vrising/persistentdata
+              subPath: persistentdata
+      volumes:
+        - name: vrising-storage
+          persistentVolumeClaim:
+            claimName: vrising-pvc
+

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vrising
+  namespace: {{ .Values.namespace }}
+spec:
+  type: LoadBalancer
+  selector:
+    app: vrising
+  ports:
+    - name: game
+      port: {{ .Values.ports.gamePort }}
+      targetPort: {{ .Values.ports.gamePort }}
+      protocol: UDP
+    - name: query
+      port: {{ .Values.ports.queryPort }}
+      targetPort: {{ .Values.ports.queryPort }}
+      protocol: UDP
+
